@@ -54,18 +54,22 @@ public class sortit {
 
 	public static void addToList(String object, Queue list0, Queue list1, Queue curlist)
 	{
-		        //if (curlist.rear==null)//the list is empty
-			//	curlist.enqueue(object);
-			if (curlist.rear.value.compareTo(object)<0)
+		        if (curlist.rear==null)//the list is empty
+			{
+				curlist.enqueue(object);
+				return;
+			}
+			if (curlist.rear.value.compareTo(object)>0)
 			{
 				if (curlist==list0)
 					curlist=list1;
-		                else
+				else
 					curlist=list0;
 				curlist.enqueue(object);
+				return;
 			}
-			else
-				curlist.enqueue(object);
+			curlist.enqueue(object);
+			return;
 
 	}
 
@@ -108,19 +112,20 @@ public class sortit {
 				System.out.print("Enter object: ");
 				temp=input.nextLine();
 				addToList(temp, list0, list1, curlist);
+				input.close();
 			}
 		}
 
 		while ((list0.front!=null)&&(list1!=null))
 		{
 			//dummy value to check if list is exhausted
-			String dummy = "Hopefully not a test value";
+			String dummy = null;
 			list0.enqueue(dummy);
 			list1.enqueue(dummy);
 
-			do//place smallest value in curlist
+			while((list0.front.value.compareTo(dummy)!=0)&&(list1.front.value.compareTo(dummy)!=0))
 			{
-				if(list0.front.value.compareTo(list1.front.value)<0)
+				if(list0.front.value.compareTo(list1.front.value)>0)
 				{
 					temp = list1.dequeue();
 					addToList(temp, list0, list1, curlist);
@@ -130,27 +135,27 @@ public class sortit {
 					temp = list0.dequeue();
 					addToList(temp, list0, list1, curlist);
 				}
-			}while((list0.front.value.compareTo(dummy)!=0)||(list1.front.value.compareTo(dummy)!=0));//both lists are not exhausted
-			
+			}
+
 			if (list0.front.value.compareTo(dummy)==0)//list0 exhausted
 			{
-				String discard = list0.dequeue();
+				list0.dequeue();
 				while(list1.front.value.compareTo(dummy)!=0)
 				{
 					temp = list1.dequeue();
 					addToList(temp, list0, list1, curlist);
 				}
-				discard = list1.dequeue();
+				list1.dequeue();
 			}
 			else //list1 exhausted
 			{
-				String discard = list1.dequeue();
+				list1.dequeue();
 				while(list0.front.value.compareTo(dummy)!=0)
 				{
 					temp = list0.dequeue();
 					addToList(temp, list0, list1, curlist);
 				}
-				discard = list0.dequeue();
+				list0.dequeue();
 			}
 		}
 		

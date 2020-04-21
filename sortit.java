@@ -52,29 +52,49 @@ class Queue
 
 public class sortit {
 
+	public static void addToList(String object, Queue list0, Queue list1, Queue curlist)
+	{
+		        //if (curlist.rear==null)//the list is empty
+			//	curlist.enqueue(object);
+			if (curlist.rear.value.compareTo(object)<0)
+			{
+				if (curlist==list0)
+					curlist=list1;
+		                else
+					curlist=list0;
+				curlist.enqueue(object);
+			}
+			else
+				curlist.enqueue(object);
+
+	}
+
+	public static void printList(Queue list)
+	{
+		while (list.front != null)
+		{
+			String value = list.dequeue();
+			System.out.println(value);
+		}
+	}
+
 	public static void main(String[] args)
 	{
-		/* test queue
-		Queue q = new Queue();
-		q.enqueue("3");
-		q.enqueue("2");
-		q.enqueue("1");
-		System.out.println("Queue Front: " +q.front.value);
-		System.out.println("Queue Rear: " +q.rear.value);
-		System.out.println(q.dequeue() + q.dequeue() + q.dequeue());
-		if (q.dequeue()==null)
-			System.out.println("nice");*/
+		Queue list0 = new Queue();
+		Queue list1 = new Queue();
+		Queue curlist = list0;
+		String temp;
 
 		for (String s: args)
 		{
-			if (s!="-"){
+			if (s.compareTo("-")!=0){//file input
 				try {
 					File myFile = new File(s);
 					Scanner myScanner = new Scanner(myFile);
 					while (myScanner.hasNextLine())
 					{
-						String line = myScanner.nextLine();
-						System.out.println(line);
+						temp = myScanner.nextLine();
+						addToList(temp, list0, list1, curlist);
 					}
 					myScanner.close();
 				} catch (FileNotFoundException e) {
@@ -82,14 +102,59 @@ public class sortit {
 					System.exit(1);
 				}
 			}
-			else//s==-
+			else//standard input
 			{
 				Scanner input = new Scanner(System.in);
-				System.out.println("Enter object: ");
-				String myObject=input.nextLine();
-				System.out.println(myObject);
-
+				System.out.print("Enter object: ");
+				temp=input.nextLine();
+				addToList(temp, list0, list1, curlist);
 			}
 		}
+
+		while ((list0.front!=null)&&(list1!=null))
+		{
+			//dummy value to check if list is exhausted
+			String dummy = "Hopefully not a test value";
+			list0.enqueue(dummy);
+			list1.enqueue(dummy);
+
+			do//place smallest value in curlist
+			{
+				if(list0.front.value.compareTo(list1.front.value)<0)
+				{
+					temp = list1.dequeue();
+					addToList(temp, list0, list1, curlist);
+				}
+				else
+				{
+					temp = list0.dequeue();
+					addToList(temp, list0, list1, curlist);
+				}
+			}while((list0.front.value.compareTo(dummy)!=0)||(list1.front.value.compareTo(dummy)!=0));//both lists are not exhausted
+			
+			if (list0.front.value.compareTo(dummy)==0)//list0 exhausted
+			{
+				String discard = list0.dequeue();
+				while(list1.front.value.compareTo(dummy)!=0)
+				{
+					temp = list1.dequeue();
+					addToList(temp, list0, list1, curlist);
+				}
+				discard = list1.dequeue();
+			}
+			else //list1 exhausted
+			{
+				String discard = list1.dequeue();
+				while(list0.front.value.compareTo(dummy)!=0)
+				{
+					temp = list0.dequeue();
+					addToList(temp, list0, list1, curlist);
+				}
+				discard = list0.dequeue();
+			}
+		}
+		
+		printList(list0);
+		printList(list1);		
 	}
 }

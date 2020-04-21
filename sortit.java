@@ -51,10 +51,9 @@ class Queue
 }
 
 public class sortit {
-
 	public static void addToList(String object, Queue list0, Queue list1, Queue curlist)
 	{
-		        if (curlist.rear==null)//the list is empty
+			if ((curlist.rear==null)||(curlist.rear.value==null))//the list is empty
 			{
 				curlist.enqueue(object);
 				return;
@@ -71,15 +70,6 @@ public class sortit {
 			curlist.enqueue(object);
 			return;
 
-	}
-
-	public static void printList(Queue list)
-	{
-		while (list.front != null)
-		{
-			String value = list.dequeue();
-			System.out.println(value);
-		}
 	}
 
 	public static void main(String[] args)
@@ -109,21 +99,22 @@ public class sortit {
 			else//standard input
 			{
 				Scanner input = new Scanner(System.in);
-				System.out.print("Enter object: ");
-				temp=input.nextLine();
-				addToList(temp, list0, list1, curlist);
+				do{
+					System.out.print("Enter object: ");
+					temp=input.nextLine();
+					addToList(temp, list0, list1, curlist);
+				}while(temp.length()!=0);
 				input.close();
 			}
 		}
 
-		while ((list0.front!=null)&&(list1!=null))
+		while ((list0.front!=null)&&(list1.front!=null))
 		{
 			//dummy value to check if list is exhausted
-			String dummy = null;
-			list0.enqueue(dummy);
-			list1.enqueue(dummy);
+			list0.enqueue(null);
+			list1.enqueue(null);
 
-			while((list0.front.value.compareTo(dummy)!=0)&&(list1.front.value.compareTo(dummy)!=0))
+			while((list0.front.value!=null)&&(list1.front.value!=null))
 			{
 				if(list0.front.value.compareTo(list1.front.value)>0)
 				{
@@ -137,10 +128,10 @@ public class sortit {
 				}
 			}
 
-			if (list0.front.value.compareTo(dummy)==0)//list0 exhausted
+			if (list0.front.value==null)//list0 exhausted
 			{
 				list0.dequeue();
-				while(list1.front.value.compareTo(dummy)!=0)
+				while(list1.front.value!=null)
 				{
 					temp = list1.dequeue();
 					addToList(temp, list0, list1, curlist);
@@ -150,7 +141,7 @@ public class sortit {
 			else //list1 exhausted
 			{
 				list1.dequeue();
-				while(list0.front.value.compareTo(dummy)!=0)
+				while(list0.front.value!=null)
 				{
 					temp = list0.dequeue();
 					addToList(temp, list0, list1, curlist);
@@ -159,7 +150,13 @@ public class sortit {
 			}
 		}
 		
-		printList(list0);
-		printList(list1);		
+		while(list0.front!=null)
+		{
+			System.out.println(list0.dequeue());
+		}
+		while(list1.front!=null)
+		{
+			System.out.println(list1.dequeue());
+		}
 	}
 }
